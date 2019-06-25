@@ -1,6 +1,13 @@
 let Game;
 
 let squareboy;
+let squareboyHealth;
+let squareboyPoints;
+let squareboyAmmo;
+
+let squareboyAmmoReloadInterval;
+let squareboyHPRecoveryInterval;
+
 let playerProjectiles = []
 
 let gameTitle;
@@ -49,21 +56,32 @@ class SquareboyGame {
   startGame() {
     let ctx = gameBoard.canvas.getContext("2d");
     squareboy = new Player(30, 30, "red", (window.innerWidth / 2) - 15, (window.innerHeight / 2) + 45);
+    squareboyHealth = new HealthBar()
+    squareboyPoints = new PlayerScore()
+    squareboyAmmo = new AmmunitionBar()
+
     gameBoard.start();
 
-    window.addEventListener('click', (e) => {
-      showGameTitle = false
+    squareboyAmmoReloadInterval = setInterval(() => {
+      if (squareboyAmmo.ammoClip <= 140 && !showGameTitle) {
+        squareboyAmmo.ammoClip += 10
+      }
+    }, 550);
 
+    window.addEventListener('click', (e) => {
+      if (showGameTitle) {
+        showGameTitle = false
+        playMusic()
+      }
       const mousePos = {
         x: e.clientX,
         y: e.clientY
       };
 
-      playerProjectiles.push(new PlayerAttackProjectile(10, 10, 'red', squareboy.x, squareboy.y, parseInt(mousePos.x), parseInt(mousePos.y)))
-      // playerProjectiles.push(new PlayerAttackProjectile(10, 10, 'red', mousePos.x - 5, mousePos.y - 5))
-
-      console.log(mousePos.x, mousePos.y)
-      console.log(squareboy.x, squareboy.y)
+      if (squareboyAmmo.ammoClip >= 10) {
+        playerProjectiles.push(new PlayerAttackProjectile(10, 10, 'red', squareboy.x, squareboy.y, parseInt(mousePos.x), parseInt(mousePos.y)));
+        squareboyAmmo.ammoClip -= 10;
+      }
 
     })
   }
@@ -90,12 +108,15 @@ class SquareboyGame {
       squareboy.speed = 0;
     } else {
       squareboy.speed = 8;
+      squareboyHealth.update()
+      squareboyPoints.update(1)
+      squareboyAmmo.update()
     }
 
     if (!showGameTitle) {
       if (gameBoard.keys && gameBoard.keys[controls.left]) { squareboy.moveAngle = -5; }
       if (gameBoard.keys && gameBoard.keys[controls.right]) { squareboy.moveAngle = 5; }
-      if (gameBoard.keys && gameBoard.keys[controls.up]) { squareboy.speed = 8; }
+      if (gameBoard.keys && gameBoard.keys[controls.up]) { squareboy.speed = 12; }
       if (gameBoard.keys && gameBoard.keys[controls.down]) { squareboy.speed = 5; }
       if (gameBoard.keys && gameBoard.keys[controls.action]) { squareboy.color = 'white'; } else {
         squareboy.color = 'red'
@@ -135,13 +156,19 @@ class Player {
     this.speed = 0;
     this.angle = 0;
     this.moveAngle = 0;
-    this.health
+    this.health = 150
   }
 
   newPos() {
     this.angle += this.moveAngle * Math.PI / 180;
     this.x += this.speed * Math.sin(this.angle);
     this.y -= this.speed * Math.cos(this.angle);
+
+    if (this.x > gameBoard.width + 15) { this.x = -15 }
+    if (this.x < -15) { this.x = gameBoard.width + 15 }
+    if (this.y > gameBoard.height + 15) { this.y = -15 }
+    if (this.y < -15) { this.y = gameBoard.height + 15 }
+
   }
 
   update() {
@@ -157,6 +184,62 @@ class Player {
   }
 
 };
+
+class HealthBar {
+  constructor() {
+    this.maxHP
+    this.recoveryRate
+  }
+  update() {
+    let ctx = gameBoard.canvas.getContext("2d");
+    ctx.save();
+
+    ctx.fillStyle = "#188d36";
+    ctx.fillRect(20, gameBoard.height - 45, (squareboy.health / 100) * 140, 30);
+    ctx.restore();
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 14pt Pragati Narrow'
+    ctx.fillText("HP", 25, gameBoard.height - 25);
+  }
+}
+
+class AmmunitionBar {
+  constructor() {
+    this.ammoClip = 150
+  }
+  update() {
+    let ctx = gameBoard.canvas.getContext("2d");
+    ctx.save();
+
+    ctx.fillStyle = "#ebad1d";
+    ctx.fillRect(gameBoard.width - ((this.ammoClip / 100) * 140) - 20, gameBoard.height - 45, (this.ammoClip / 100) * 140, 30);
+    ctx.restore();
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 14pt Pragati Narrow'
+    ctx.fillText("AMMO", gameBoard.width - (ctx.measureText("AMMO").width) - 15, gameBoard.height - 25);
+  }
+}
+
+class PlayerScore {
+  constructor() {
+    this.points = 0
+  }
+  update(points) {
+    this.points += points
+    let ctx = gameBoard.canvas.getContext("2d");
+    ctx.save();
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 10pt Pragati Narrow'
+    ctx.fillText("SCORE", (gameBoard.width / 2) - (ctx.measureText("SCORE").width / 2), 30);
+
+    ctx.fillStyle = '#22bff3';
+    ctx.font = 'bold 12pt Pragati Narrow'
+    ctx.fillText(this.points, (gameBoard.width / 2) - (ctx.measureText(this.points).width / 2), 55);
+  }
+}
 
 class PlayerAttackProjectile {
   constructor(width, height, color, x, y, destX, destY) {

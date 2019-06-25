@@ -1,5 +1,5 @@
 #app-container {
-  background-color: #282c34;
+  background-color: #283134;
   min-height: 100vh;
   max-height: 100vh;
   box-sizing: border-box;
@@ -11,7 +11,7 @@
   font-weight: 700;
   font-size: calc(20px + 2vmin);
   text-transform: uppercase;
-  letter-spacing: 2vmin;
+  letter-spacing: 1.5vmin;
   color: white;
 }
 
