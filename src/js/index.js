@@ -86,11 +86,17 @@ class SquareboyGame {
     squareboy.moveAngle = 0;
     squareboy.speed = 0;
 
+    if (showGameTitle) {
+      squareboy.speed = 0;
+    } else {
+      squareboy.speed = 8;
+    }
+
     if (!showGameTitle) {
       if (gameBoard.keys && gameBoard.keys[controls.left]) { squareboy.moveAngle = -5; }
       if (gameBoard.keys && gameBoard.keys[controls.right]) { squareboy.moveAngle = 5; }
-      if (gameBoard.keys && gameBoard.keys[controls.up]) { squareboy.speed = 5; }
-      if (gameBoard.keys && gameBoard.keys[controls.down]) { squareboy.speed = -5; }
+      if (gameBoard.keys && gameBoard.keys[controls.up]) { squareboy.speed = 8; }
+      if (gameBoard.keys && gameBoard.keys[controls.down]) { squareboy.speed = 5; }
       if (gameBoard.keys && gameBoard.keys[controls.action]) { squareboy.color = 'white'; } else {
         squareboy.color = 'red'
       }
@@ -159,7 +165,7 @@ class PlayerAttackProjectile {
     this.x = x;
     this.y = y;
     this.color = color
-    this.speed = 10;
+    this.speed = 12;
     this.angle = 0;
     this.destX = destX;
     this.destY = destY;
