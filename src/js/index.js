@@ -79,6 +79,11 @@ class SquareboyGame {
       };
 
       if (squareboyAmmo.ammoClip >= 10) {
+        if (laser.paused) {
+          laser.play();
+        } else {
+          laser.currentTime = 0
+        }
         playerProjectiles.push(new PlayerAttackProjectile(10, 10, 'red', squareboy.x, squareboy.y, parseInt(mousePos.x), parseInt(mousePos.y)));
         squareboyAmmo.ammoClip -= 10;
       }
@@ -164,10 +169,10 @@ class Player {
     this.x += this.speed * Math.sin(this.angle);
     this.y -= this.speed * Math.cos(this.angle);
 
-    if (this.x > gameBoard.width + 15) { this.x = -15 }
-    if (this.x < -15) { this.x = gameBoard.width + 15 }
-    if (this.y > gameBoard.height + 15) { this.y = -15 }
-    if (this.y < -15) { this.y = gameBoard.height + 15 }
+    if (this.x > gameBoard.width + 15) { this.x = -15; squareboy.health -= 2; }
+    if (this.x < -15) { this.x = gameBoard.width + 15; squareboy.health -= 2; }
+    if (this.y > gameBoard.height + 15) { this.y = -15; squareboy.health -= 2; }
+    if (this.y < -15) { this.y = gameBoard.height + 15; squareboy.health -= 2; }
 
   }
 
@@ -236,7 +241,7 @@ class PlayerScore {
     ctx.fillText("SCORE", (gameBoard.width / 2) - (ctx.measureText("SCORE").width / 2), 30);
 
     ctx.fillStyle = '#22bff3';
-    ctx.font = 'bold 12pt Pragati Narrow'
+    ctx.font = 'bold 15pt Pragati Narrow'
     ctx.fillText(this.points, (gameBoard.width / 2) - (ctx.measureText(this.points).width / 2), 55);
   }
 }
