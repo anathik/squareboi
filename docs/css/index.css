@@ -1,0 +1,20 @@
+#app-container {
+  background-color: #283134;
+  min-height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Pragati Narrow', sans-serif;
+  font-weight: 700;
+  font-size: calc(20px + 2vmin);
+  text-transform: uppercase;
+  letter-spacing: 1.5vmin;
+  color: white;
+}
+
+#gameView {
+  align-self: center;
+}

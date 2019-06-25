@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="250px" height="50px" viewBox="0 0 250 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>Logo2X</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <text id="SQUAREBOY" font-family="PragatiNarrow-Bold, Pragati Narrow" font-size="28" font-style="condensed" font-weight="bold" letter-spacing="4" fill="#000000">
+            <tspan x="56" y="34">SQUAREBO</tspan>
+            <tspan x="209.968" y="34">Y</tspan>
+        </text>
+        <rect id="Rectangle" stroke="#090909" stroke-width="4" x="29" y="16" width="18" height="18"></rect>
+        <rect id="Rectangle-2" fill="#FF0000" x="33" y="20" width="10" height="10"></rect>
+    </g>
+</svg>
