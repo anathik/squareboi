@@ -1,14 +1,8 @@
-let Game;
-
-let squareboy;
-let squareboyHealth;
-let squareboyPoints;
-let squareboyAmmo;
-
-let squareboyAmmoReloadInterval;
-let squareboyHPRecoveryInterval;
-
-let playerProjectiles = []
+let enemyInterval = setInterval(() => {
+  if (!showGameTitle && enemies.length < 12) {
+    enemies.push(new Enemy(getRandomInt(250, 40), 'orange', getRandomInt(gameBoard.width - 150, 150), getRandomInt(gameBoard.height - 150, 150), squareboy.x, squareboy.y))
+  }
+}, getRandomInt(5000, 1500))
 
 let gameTitle;
 let showGameTitle; /* true = game is stopped or unstarted, false */
@@ -66,7 +60,7 @@ class SquareboyGame {
       if (squareboyAmmo.ammoClip <= 140 && !showGameTitle) {
         squareboyAmmo.ammoClip += 10
       }
-    }, 550);
+    }, 1500);
 
     window.addEventListener('click', (e) => {
       if (showGameTitle) {
@@ -85,7 +79,7 @@ class SquareboyGame {
           laser.currentTime = 0
         }
         playerProjectiles.push(new PlayerAttackProjectile(10, 10, 'red', squareboy.x, squareboy.y, parseInt(mousePos.x), parseInt(mousePos.y)));
-        squareboyAmmo.ammoClip -= 10;
+        squareboyAmmo.ammoClip -= 5;
       }
 
     })
@@ -103,6 +97,11 @@ class SquareboyGame {
 
       ctx.font = '12pt Pragati Narrow'
       ctx.fillText("CLICK ANYWHERE TO BEGIN", (window.innerWidth / 2) - (ctx.measureText('CLICK ANYWHERE TO BEGIN').width / 2), (window.innerHeight / 2) + 100);
+    }
+
+    for (let i = 0; i < enemies.length; i++) {
+      if (enemies && enemies[i]) { enemies[i].newPos(); }
+      if (enemies && enemies[i]) { enemies[i].update(); }
     }
 
     // Squareboy
@@ -136,14 +135,12 @@ class SquareboyGame {
     squareboy.newPos();
     squareboy.update();
 
-    // Enemies (Circles)
-
-
     // Recursively updating frames.
     requestAnimationFrame(Game.updateGameArea)
   }
 };
 
+// Le Square XD
 class Player {
   constructor(width, height, color, x, y) {
     this.width = width;
@@ -169,10 +166,10 @@ class Player {
     this.x += this.speed * Math.sin(this.angle);
     this.y -= this.speed * Math.cos(this.angle);
 
-    if (this.x > gameBoard.width + 15) { this.x = -15; squareboy.health -= 2; }
-    if (this.x < -15) { this.x = gameBoard.width + 15; squareboy.health -= 2; }
-    if (this.y > gameBoard.height + 15) { this.y = -15; squareboy.health -= 2; }
-    if (this.y < -15) { this.y = gameBoard.height + 15; squareboy.health -= 2; }
+    if (this.x > gameBoard.width + 15) { this.x = -15; squareboy.health -= 5; }
+    if (this.x < -15) { this.x = gameBoard.width + 15; squareboy.health -= 5; }
+    if (this.y > gameBoard.height + 15) { this.y = -15; squareboy.health -= 5; }
+    if (this.y < -15) { this.y = gameBoard.height + 15; squareboy.health -= 5; }
 
   }
 
@@ -190,6 +187,70 @@ class Player {
 
 };
 
+// Circles >8(
+class Enemy {
+  constructor(radius, color, x, y, destX, destY) {
+    this.width = radius;
+    this.height = radius;
+    this.x = x;
+    this.y = y;
+    this.color = color
+    this.speed = getRandomInt(4, 1);
+    this.angle = 0;
+    this.destX = destX;
+    this.destY = destY;
+    this.moveAngle = calculateAngle(this.x, this.y, this.destX, this.destY) + 90;
+
+    this.damage = getRandomInt(50, 15);
+  }
+
+  newPos() {
+    let allEnemies = []
+
+    // this.destX = getRandomInt(gameBoard.width - 150, 150);
+    // this.destY = getRandomInt(gameBoard.height - 150, 150);
+    // this.moveAngle = calculateAngle(this.x, this.y, this.destX, this.destY) + 90;
+
+    if (this.x > gameBoard.width + this.width || this.x < - this.width) {
+      enemies.map((enemy) => {
+        if (enemy.x > gameBoard.width || enemy.x < 0) {
+          return
+        }
+        if (enemy.y > gameBoard.height || enemy.y < 0) {
+          return
+        }
+        allEnemies.push(enemy)
+      })
+      enemies = allEnemies
+    }
+    if (this.y > gameBoard.height + this.width || this.y < - this.width) {
+      enemies.map((enemy) => {
+        if (enemy.x > gameBoard.width || enemy.x < 0) {
+          return
+        }
+        if (enemy.y > gameBoard.height || enemy.y < 0) {
+          return
+        }
+        allEnemies.push(enemy)
+      })
+      enemies = allEnemies
+    }
+    this.angle = this.moveAngle * Math.PI / 180;
+    this.x += this.speed * Math.sin(this.angle);
+    this.y -= this.speed * Math.cos(this.angle);
+  }
+
+  update() {
+    let ctx = gameBoard.canvas.getContext("2d");
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
+    ctx.restore();
+  }
+};
+
 class HealthBar {
   constructor() {
     this.maxHP
@@ -200,7 +261,7 @@ class HealthBar {
     ctx.save();
 
     ctx.fillStyle = "#188d36";
-    ctx.fillRect(20, gameBoard.height - 45, (squareboy.health / 100) * 140, 30);
+    ctx.fillRect(20, gameBoard.height - 45, (squareboy.health / 100) * 200, 30);
     ctx.restore();
 
     ctx.fillStyle = 'white';
@@ -218,7 +279,7 @@ class AmmunitionBar {
     ctx.save();
 
     ctx.fillStyle = "#ebad1d";
-    ctx.fillRect(gameBoard.width - ((this.ammoClip / 100) * 140) - 20, gameBoard.height - 45, (this.ammoClip / 100) * 140, 30);
+    ctx.fillRect(gameBoard.width - ((this.ammoClip / 100) * 200) - 20, gameBoard.height - 45, (this.ammoClip / 100) * 200, 30);
     ctx.restore();
 
     ctx.fillStyle = 'white';
@@ -258,6 +319,8 @@ class PlayerAttackProjectile {
     this.destX = destX;
     this.destY = destY;
     this.moveAngle = calculateAngle(this.x, this.y, this.destX, this.destY) + 90;
+
+    this.damage = getRandomInt(50, 15)
   }
 
   newPos() {
@@ -302,13 +365,3 @@ class PlayerAttackProjectile {
     ctx.restore();
   }
 };
-
-
-function calculateAngle(cx, cy, ex, ey) {
-  var dy = ey - cy;
-  var dx = ex - cx;
-  var theta = Math.atan2(dy, dx); // range (-PI, PI]
-  theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
-  //if (theta < 0) theta = 360 + theta; // range [0, 360)
-  return theta;
-}

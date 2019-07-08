@@ -8,6 +8,7 @@ const controls = {
   right: 68, /* D  */
 
   // Other Controls
-  action: 32 /* Spacebar */
+  action: 32, /* Spacebar */
+  pause: 80 /* Spacebar */
   // defend: 87,
 }
