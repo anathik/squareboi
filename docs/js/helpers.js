@@ -37,8 +37,11 @@ function detectProjectileEnemyCollisions(object) {
 }
 
 // Returns Boolean
-function detectBoundaryInfraction(primaryObjectSet, secondaryObjectSet) {
+function generateEnemyObject() {
+  let x = getRandomInt(gameBoard.width - 150, 150)
+  let y = getRandomInt(gameBoard.height - 150, 150)
 
+  if (!showGameTitle && enemies.length < maxEnemyCount) enemies.push(new Enemy(getRandomInt(200, 40), x, y, squareboy.x, squareboy.y))
 }
 
 function randomizeObjectMovements() {

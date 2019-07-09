@@ -1,16 +1,11 @@
-let enemyInterval = setInterval(() => {
-  if (!showGameTitle && enemies.length < 10) {
-    enemies.push(new Enemy(getRandomInt(200, 40), 'orange', getRandomInt(gameBoard.width - 150, 150), getRandomInt(gameBoard.height - 150, 150), squareboy.x, squareboy.y))
-  }
-}, getRandomInt(3000, 1500))
-
-let gameTitle;
-let showGameTitle; /* true = game is stopped or unstarted, false */
-
 window.onload = () => {
   Game = new SquareboyGame()
   Game.startGame()
 };
+
+let enemyInterval = setInterval(() => {
+  generateEnemyObject()
+}, getRandomInt(3000, 1500))
 
 let gameBoard = {
   canvas: document.getElementById('gameView'),
@@ -218,7 +213,7 @@ class Player {
 
 // Circles >8(
 class Enemy {
-  constructor(radius, color, x, y, destX, destY) {
+  constructor(radius, x, y, destX, destY) {
     this.width = radius;
     this.height = radius;
     this.x = x;
