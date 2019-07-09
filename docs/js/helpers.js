@@ -14,8 +14,26 @@ function calculateAngle(cx, cy, ex, ey) {
 }
 
 // Returns Boolean
-function detectCollision(primaryObjectSet, secondaryObjectSet) {
+function detectProjectileEnemyCollisions(object) {
+  let x = object.x
+  let y = object.y
+  let dmg = object.damage
 
+  let allEnemies = []
+  let isCollision = false
+  enemies.map((enemy) => {
+    if (x > enemy.minX && x < enemy.maxX && y > enemy.minY && y < enemy.maxY) {
+      squareboyAmmo.ammoClip += 2
+      enemy.health -= dmg
+      allEnemies.push(enemy)
+      isCollision = true
+      return
+    } else {
+      allEnemies.push(enemy)
+    }
+  })
+  enemies = allEnemies
+  return isCollision;
 }
 
 // Returns Boolean
