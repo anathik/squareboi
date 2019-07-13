@@ -25,6 +25,7 @@ function detectProjectileEnemyCollisions(object) {
     if (x > enemy.minX && x < enemy.maxX && y > enemy.minY && y < enemy.maxY) {
       squareboyAmmo.ammoClip += 2
       enemy.health -= dmg
+      enemy.width -= dmg
       allEnemies.push(enemy)
       isCollision = true
       return
@@ -36,14 +37,61 @@ function detectProjectileEnemyCollisions(object) {
   return isCollision;
 }
 
-// Returns Boolean
+function detectPlayerEnemyCollisions(object) {
+  let x = object.x
+  let y = object.y
+  let dmg = 10
+
+  let allEnemies = []
+  let isCollision = false
+  enemies.map((enemy) => {
+    if (x > enemy.minX && x < enemy.maxX && y > enemy.minY && y < enemy.maxY) {
+      squareboy.health -= enemy.damage
+      if (enemy.isKamikaze) {
+        enemy.damage = 0
+        enemy.health = 0
+        enemy.width = 0
+      }
+      allEnemies.push(enemy)
+      isCollision = true
+      return
+    } else {
+      allEnemies.push(enemy)
+    }
+  })
+  enemies = allEnemies
+  return isCollision;
+}
+
+// this.pointValue
+
 function generateEnemyObject() {
   let x = getRandomInt(gameBoard.width - 150, 150)
   let y = getRandomInt(gameBoard.height - 150, 150)
 
-  if (!showGameTitle && enemies.length < maxEnemyCount) enemies.push(new Enemy(getRandomInt(200, 40), x, y, squareboy.x, squareboy.y))
+  if (!showGameTitle && enemies.length < maxEnemyCount) {
+    let circleSquad = getRandomInt(5, 1)
+
+    for (let i = 1; i <= circleSquad; i++) {
+      enemies.push(new Enemy(getRandomInt(200, 40), x, y, squareboy.x, squareboy.y))
+      x = getRandomInt(gameBoard.width - 150, 150)
+      y = getRandomInt(gameBoard.height - 150, 150)
+    }
+  }
 }
 
-function randomizeObjectMovements() {
-  console.error('enemies', enemies)
+function generatePlayerProjectileObject(mousePosX, mousePosY) {
+  if (squareboyAmmo.ammoClip >= 8) {
+    if (laser.paused) {
+      laser.play();
+    } else {
+      laser.currentTime = 0
+    }
+    playerProjectiles.push(new PlayerAttackProjectile(10, 10, 'red', squareboy.x, squareboy.y, parseInt(mousePosX), parseInt(mousePosY)));
+    squareboyAmmo.ammoClip -= 8;
+  }
+}
+
+function randomizeEnemyMovement() {
+
 }
