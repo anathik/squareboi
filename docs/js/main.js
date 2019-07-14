@@ -10,7 +10,7 @@ let enemyInterval = setInterval(() => {
 let gameBoard = {
   canvas: document.getElementById('gameView'),
   start: function () {
-    showGameTitle = true
+    areMenusActive = true
 
     gameBoard.width = window.innerWidth
     gameBoard.height = window.innerHeight
@@ -25,10 +25,15 @@ let gameBoard = {
       e.preventDefault();
       gameBoard.keys = (gameBoard.keys || []);
       gameBoard.keys[e.keyCode] = (e.type === "keydown");
+
+      if (gameBoard.keys && gameBoard.keys[controls.pause]) {
+        if (!mainMenu.isActive) pauseMenu.toggleDisplay()
+      }
     })
     window.addEventListener('keyup', (e) => {
       gameBoard.keys[e.keyCode] = (e.type === "keydown");
     })
+
   },
   stop: function () {
 
@@ -51,14 +56,15 @@ class SquareboyGame {
     gameBoard.start();
 
     squareboyAmmoReloadInterval = setInterval(() => {
-      if (squareboyAmmo.ammoClip <= 140 && !showGameTitle) {
+      if (squareboyAmmo.ammoClip <= 140 && !areMenusActive) {
         squareboyAmmo.ammoClip += 5
       }
     }, 1500);
 
     window.addEventListener('click', (e) => {
-      if (showGameTitle) {
-        showGameTitle = false
+      mainMenu.isActive = false
+      if (areMenusActive) {
+        areMenusActive = false
         playMusic()
       }
       const mousePos = {
@@ -74,16 +80,15 @@ class SquareboyGame {
     let allEnemies = []
     let newPlayerProjectiles = []
 
-    if (showGameTitle) {
-      gameBoard.context.fillStyle = 'white';
-      gameBoard.context.font = 'bold 34pt Pragati Narrow'
-      gameBoard.context.fillText("SQUAREBOY", (window.innerWidth / 2) - (gameBoard.context.measureText('SQUAREBOY').width / 2), window.innerHeight / 2);
+    if (areMenusActive) {
+      mainMenu.updateDisplay()
+      pauseMenu.updateDisplay()
+      defeatedScreen.updateDisplay()
 
-      gameBoard.context.font = '12pt Pragati Narrow'
-      gameBoard.context.fillText("CLICK ANYWHERE TO BEGIN", (window.innerWidth / 2) - (gameBoard.context.measureText('CLICK ANYWHERE TO BEGIN').width / 2), (window.innerHeight / 2) + 100);
-
-      squareboy.newPos()
-      squareboy.update()
+      if (mainMenu.isActive) {
+        squareboy.newPos()
+        squareboy.update()
+      }
 
     } else {
       gameBoard.clear();
@@ -113,7 +118,7 @@ class SquareboyGame {
       squareboy.moveAngle = 0;
       squareboy.speed = 0;
 
-      if (showGameTitle) {
+      if (areMenusActive) {
         squareboy.speed = 0;
       } else {
         squareboy.speed = 8;
@@ -122,7 +127,7 @@ class SquareboyGame {
         squareboyAmmo.update()
       }
 
-      if (!showGameTitle) {
+      if (!areMenusActive) {
         if (gameBoard.keys && gameBoard.keys[controls.left]) { squareboy.moveAngle = -5; }
         if (gameBoard.keys && gameBoard.keys[controls.right]) { squareboy.moveAngle = 5; }
         if (gameBoard.keys && gameBoard.keys[controls.up]) { squareboy.speed = 10; }

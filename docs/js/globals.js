@@ -4,7 +4,7 @@
 
 let Game;
 let gameTitle;
-let showGameTitle; /* true = game is stopped or unstarted, false */
+let areMenusActive; /* true = game is stopped or unstarted, false */
 
 // Player controls
 const controls = {
@@ -49,7 +49,6 @@ let combatMultiplierCheckpoints = [1, 5, 15, 30, 50];
 
 
 // Menus
-
 const randomSubheaders = [
   'Fun Fact: 100% of players who pause the game are actually amatuers',
   'Is the game too hard for you, bud?',
@@ -57,3 +56,7 @@ const randomSubheaders = [
   'This game can cure some illnesses... but it won\'t',
   'Are you even trying at this point?'
 ]
+
+let mainMenu = new OpeningMenu()
+let pauseMenu = new PauseMenu()
+let defeatedScreen = new DeathMenu()

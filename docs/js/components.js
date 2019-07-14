@@ -28,6 +28,9 @@ class Player {
     if (this.y > gameBoard.height + 15) { this.y = -15; this.health -= 5; }
     if (this.y < -15) { this.y = gameBoard.height + 15; this.health -= 5; }
 
+    if (this.health < 0) {
+      defeatedScreen.toggleDisplay()
+    }
   }
 
   update() {
@@ -224,7 +227,7 @@ class PlayerAttackProjectile {
 
 // MENUS //
 
-class pauseMenu {
+class PauseMenu {
   constructor() {
     this.isActive = false
     this.isGameStopped = false
@@ -234,16 +237,32 @@ class pauseMenu {
   }
 
   toggleDisplay() {
-    this.isActive ? this.isActive = false : this.isActive = true
+    this.subheaderText = randomSubheaders[getRandomInt(randomSubheaders.length - 1, 0)]
+    if (this.isActive) {
+      myAudio.play();
+      areMenusActive = false
+      this.isActive = false
+    } else {
+      areMenusActive = true
+      this.isActive = true
+      myAudio.pause()
+    }
   }
 
   updateDisplay() {
+    if (this.isActive) {
+      gameBoard.context.fillStyle = 'white';
+      gameBoard.context.font = 'bold 50pt Pragati Narrow'
+      gameBoard.context.fillText(this.headerText, (window.innerWidth / 2) - (gameBoard.context.measureText(this.headerText).width / 2), window.innerHeight / 2);
 
+      gameBoard.context.font = '10pt Pragati Narrow'
+      gameBoard.context.fillText(this.subheaderText.toUpperCase(), (window.innerWidth / 2) - (gameBoard.context.measureText(this.subheaderText.toUpperCase()).width / 2), (window.innerHeight / 2) + 100);
+    }
   }
 }
 
 // Grim naming convention - oops.
-class deathMenu {
+class DeathMenu {
   constructor() {
     this.isActive = false
     this.isGameStopped = true
@@ -253,17 +272,34 @@ class deathMenu {
   }
 
   toggleDisplay() {
-    this.isActive ? this.isActive = false : this.isActive = true
+    this.subheaderText = `DIED LIKE A BITCH WITH JUST ${squareboyPoints.points} SCHECKLES`
+    if (this.isActive) {
+      myAudio.play();
+      areMenusActive = false
+      this.isActive = false
+    } else {
+      areMenusActive = true
+      this.isActive = true
+      myAudio.pause()
+      resetGame()
+    }
   }
 
   updateDisplay() {
+    if (this.isActive) {
+      gameBoard.context.fillStyle = 'orange';
+      gameBoard.context.font = 'bold 34pt Pragati Narrow'
+      gameBoard.context.fillText(this.headerText, (window.innerWidth / 2) - (gameBoard.context.measureText(this.headerText).width / 2), window.innerHeight / 2);
 
+      gameBoard.context.font = '12pt Pragati Narrow'
+      gameBoard.context.fillText(this.subheaderText, (window.innerWidth / 2) - (gameBoard.context.measureText(this.subheaderText).width / 2), (window.innerHeight / 2) + 100);
+    }
   }
 }
 
-class openingMenu {
+class OpeningMenu {
   constructor() {
-    this.isActive = false
+    this.isActive = true
     this.isGameStopped = true
     this.isGamePaused = true
     this.headerText = 'SQUAREBOY'
@@ -272,14 +308,23 @@ class openingMenu {
 
   toggleDisplay() {
     this.isActive ? this.isActive = false : this.isActive = true
+
+    if (areMenusActive) {
+      areMenusActive = false
+      playMusic()
+    } else {
+      myAudio.paused(true)
+    }
   }
 
   updateDisplay() {
-    gameBoard.context.fillStyle = 'white';
-    gameBoard.context.font = 'bold 34pt Pragati Narrow'
-    gameBoard.context.fillText(this.headerText, (window.innerWidth / 2) - (gameBoard.context.measureText(this.headerText).width / 2), window.innerHeight / 2);
+    if (this.isActive) {
+      gameBoard.context.fillStyle = 'white';
+      gameBoard.context.font = 'bold 34pt Pragati Narrow'
+      gameBoard.context.fillText(this.headerText, (window.innerWidth / 2) - (gameBoard.context.measureText(this.headerText).width / 2), window.innerHeight / 2);
 
-    gameBoard.context.font = '12pt Pragati Narrow'
-    gameBoard.context.fillText(this.subheaderText, (window.innerWidth / 2) - (gameBoard.context.measureText(this.subheaderText).width / 2), (window.innerHeight / 2) + 100);
+      gameBoard.context.font = '12pt Pragati Narrow'
+      gameBoard.context.fillText(this.subheaderText, (window.innerWidth / 2) - (gameBoard.context.measureText(this.subheaderText).width / 2), (window.innerHeight / 2) + 100);
+    }
   }
 }

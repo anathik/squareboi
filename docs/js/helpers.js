@@ -69,7 +69,7 @@ function generateEnemyObject() {
   let x = getRandomInt(gameBoard.width - 150, 150)
   let y = getRandomInt(gameBoard.height - 150, 150)
 
-  if (!showGameTitle && enemies.length < maxEnemyCount) {
+  if (!areMenusActive && enemies.length < maxEnemyCount) {
     let circleSquad = getRandomInt(5, 1)
 
     for (let i = 1; i <= circleSquad; i++) {
@@ -93,5 +93,11 @@ function generatePlayerProjectileObject(mousePosX, mousePosY) {
 }
 
 function randomizeEnemyMovement() {
+
+}
+
+function resetGame() {
+  enemies = []
+  setTimeout(() => window.location.reload(), 5000)
 
 }
