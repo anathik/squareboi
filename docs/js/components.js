@@ -272,7 +272,7 @@ class DeathMenu {
   }
 
   toggleDisplay() {
-    this.subheaderText = `DIED LIKE A BITCH WITH JUST ${squareboyPoints.points} SCHECKLES`
+    this.subheaderText = `DIED LIKE A LAME BOI WITH JUST ${squareboyPoints.points} SCHECKLES`
     if (this.isActive) {
       myAudio.play();
       areMenusActive = false
